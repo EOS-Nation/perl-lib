@@ -7,6 +7,7 @@ use strict;
 use Carp;
 use DBI;
 use Exporter;
+use File::Slurp qw(read_file);
 
 use parent qw (Exporter);
 our @EXPORT_OK = qw (do_connect_mysql do_connect_sqlite);
@@ -27,6 +28,16 @@ sub do_connect_mysql {
 	my $env_user = "${env_prefix}_USER";
 	my $env_pass = "${env_prefix}_PASS";
 	my $env_host = "${env_prefix}_HOST";
+
+	if ((! defined $user) || (! defined $password) || (! defined $host)) {
+		my @lines = read_file ('/etc/database_env_systemd', {chomp => 1});
+		foreach my $entry (@lines) {
+			next if ($entry !~ /=/);
+			next if ($entry =~ /^#/);
+			my ($key, $value) = split (/=/, $entry);
+			$ENV{$key} = $value;
+		}
+	}
 
 	if (! defined $user) {
 		$user = $ENV{$env_user} || die "$0: $env_user is not defined";
