@@ -29,6 +29,18 @@ sub do_connect_mysql {
 	my $env_pass = "${env_prefix}_PASS";
 	my $env_host = "${env_prefix}_HOST";
 
+	if (! defined $user) {
+		$user = $ENV{$env_user};
+	}
+
+	if (! defined $password) {
+		$password = $ENV{$env_pass};
+	}
+
+	if (! defined $host) {
+		$host = $ENV{$env_host};
+	}
+
 	if ((! defined $user) || (! defined $password) || (! defined $host)) {
 		my @lines = read_file ('/etc/database_env_systemd', {chomp => 1});
 		foreach my $entry (@lines) {
@@ -39,17 +51,9 @@ sub do_connect_mysql {
 		}
 	}
 
-	if (! defined $user) {
-		$user = $ENV{$env_user} || die "$0: $env_user is not defined";
-	}
-
-	if (! defined $password) {
-		$password = $ENV{$env_pass} || die "$0: $env_pass is not defined";
-	}
-
-	if (! defined $host) {
-		$host = $ENV{$env_host} || die "$0: $env_host is not defined";
-	}
+	defined $user || die "$0: $env_user is not defined";
+	defined $password || die "$0: $env_pass is not defined";
+	defined $host || die "$0: $env_host is not defined";
 
 	while (! $dbh) {
 		$i++;
