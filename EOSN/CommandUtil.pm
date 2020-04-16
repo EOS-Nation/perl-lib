@@ -55,7 +55,7 @@ sub write_file_atomic {
 
 	my $temp = "$filename.tmp";
 	write_file ($temp, @stuff);
-	rename ($temp, $filename);
+	return rename ($temp, $filename);
 }
 
 sub clean_old_files {
