@@ -15,10 +15,13 @@ our @EXPORT_OK = qw(write_timestamp_log find_dirs write_file_atomic clean_old_fi
 sub write_timestamp_log {
 	my ($key, $value) = @_;
 
-	my $log = $key;
+	my $log = $key || 'no message';
+
 	if (defined $value) {
 		$log = "$key: $value";
 	}
+
+	chomp ($log);
 
 	if ($ENV{INVOCATION_ID}) {
 		# running under systemd
