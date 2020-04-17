@@ -51,9 +51,17 @@ sub do_connect_mysql {
 		}
 	}
 
-	defined $user || die "$0: $env_user is not defined";
-	defined $password || die "$0: $env_pass is not defined";
-	defined $host || die "$0: $env_host is not defined";
+	if (! defined $user) {
+		$user = $ENV{$env_user} || die "$0: $env_user is not defined";
+	}
+
+	if (! defined $password) {
+		$password = $ENV{$env_pass} || die "$0: $env_pass is not defined";
+	}
+
+	if (! defined $host) {
+		$host = $ENV{$env_host} || die "$0: $env_host is not defined";
+	}
 
 	while (! $dbh) {
 		$i++;
