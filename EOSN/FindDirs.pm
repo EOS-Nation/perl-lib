@@ -26,6 +26,9 @@ sub find_dirs {
 	return @directories;
 }
 
+# assumes any parent directory from where we start does
+# not also include a 'dot'
+
 sub find_dirs_notdot {
 	my (@dirs) = @_;
 
@@ -33,10 +36,12 @@ sub find_dirs_notdot {
 
 	find (sub {
 		return if (! -d $_);
-		return if ($_ =~ /^\./);
 
 		my $x = $File::Find::name;
 		$x =~ s#^\./##;
+
+		return if ($x =~ m#/\.#);
+
 		push (@directories, $x);
 	}, @dirs);
 
