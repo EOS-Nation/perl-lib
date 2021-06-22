@@ -3,7 +3,7 @@ package EOSN::CommandUtil;
 use utf8;
 use strict;
 use Date::Format qw(time2str);
-use File::Slurp qw(read_file write_file read_dir);
+use File::Slurp qw(write_file);
 
 use parent qw(Exporter);
 our @EXPORT_OK = qw(write_timestamp_log write_file_atomic);
