@@ -1,7 +1,4 @@
-package EOSN::CommandUtil;
-
-# This package is obsolete.
-# use EOSN::Log or EOSN::File
+package EOSN::Log;
 
 # --------------------------------------------------------------------------
 # Required modules
@@ -9,10 +6,9 @@ package EOSN::CommandUtil;
 use utf8;
 use strict;
 use Date::Format qw(time2str);
-use File::Slurp qw(write_file);
 
 use parent qw(Exporter);
-our @EXPORT_OK = qw(write_timestamp_log write_file_atomic);
+our @EXPORT_OK = qw(write_timestamp_log);
 
 # --------------------------------------------------------------------------
 # Subroutines
@@ -35,14 +31,6 @@ sub write_timestamp_log {
 	} else {
 		print sprintf ("%s: %s\n", time2str ("%Y-%m-%d %X", time), $log);
 	}
-}
-
-sub write_file_atomic {
-	my ($filename, @stuff) = @_;
-
-	my $temp = "$filename.tmp";
-	write_file ($temp, @stuff);
-	return rename ($temp, $filename);
 }
 
 1;
