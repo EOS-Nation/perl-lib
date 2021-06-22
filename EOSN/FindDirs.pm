@@ -1,5 +1,8 @@
 package EOSN::FindDirs;
 
+# --------------------------------------------------------------------------
+# Required modules
+
 use utf8;
 use strict;
 use File::Find;

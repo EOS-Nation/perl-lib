@@ -1,6 +1,7 @@
 package EOSN::SQL;
 
 # --------------------------------------------------------------------------
+# Required modules
 
 use utf8;
 use strict;

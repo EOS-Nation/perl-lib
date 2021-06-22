@@ -1,5 +1,8 @@
 package EOSN::CommandUtil;
 
+# --------------------------------------------------------------------------
+# Required modules
+
 use utf8;
 use strict;
 use Date::Format qw(time2str);

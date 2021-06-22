@@ -1,6 +1,7 @@
 package EOSN::STOMP;
 
 # --------------------------------------------------------------------------
+# Required modules
 
 use utf8;
 use strict;
