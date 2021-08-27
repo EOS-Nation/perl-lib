@@ -205,4 +205,12 @@ sub generate_page {
 	return $output;
 }
 
+sub error_404 {
+	return [
+		'404',
+		[ ],
+		[ '404 Not Found' ]
+	];
+}
+
 1;
