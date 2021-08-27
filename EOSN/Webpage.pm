@@ -3,7 +3,7 @@ package EOSN::Webpage;
 # Environment Variables:
 # - EOSN_WEBPAGE_WEB
 # - EOSN_WEBPAGE_CONFIG
-# - EOSN_WEBPAGE_LANG 
+# - EOSN_WEBPAGE_LANG
 
 # --------------------------------------------------------------------------
 # Required modules
@@ -88,8 +88,8 @@ sub lang {
 	my $env = $options{env};
 	my $default_lang = $options{default_lang} || $self->{default_lang};
 
-        my $acceptor = I18N::AcceptLanguage->new;
-        my $lang = $acceptor->accepts ($$env{HTTP_ACCEPT_LANGUAGE}, [$self->langs]) || $default_lang;
+	my $acceptor = I18N::AcceptLanguage->new;
+	my $lang = $acceptor->accepts ($$env{HTTP_ACCEPT_LANGUAGE}, [$self->langs]) || $default_lang;
 
 	return $lang;
 }
