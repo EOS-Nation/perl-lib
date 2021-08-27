@@ -186,4 +186,23 @@ sub inject_footer {
 	return $content;
 }
 
+sub generate_page {
+	my ($self, %options) = @_;
+
+	my $lang = $options{lang};
+	my $title = $options{title} || $self->label (lang => $lang, key => 'title');
+	my $footer = $options{footer} || $self->label (lang => $lang, key => 'footer');
+	my $content = $options{content};
+	my $pagefile = $options{pagefile} || $self->webdir . '/res/page.html';
+
+	my $output = read_file ($pagefile, {binmode => ':utf8'});
+	$output = $self->inject_footer (content => $output, lang => $lang);
+
+	$output =~ s/%CONTENT%/$content/;
+	$output =~ s/%TITLE%/$title/g;
+	$output =~ s/%FOOTER%/$footer/g;
+
+	return $output;
+}
+
 1;
