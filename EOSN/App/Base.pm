@@ -1,4 +1,4 @@
-package EOSN::Webpage;
+package EOSN::App::Base;
 
 # Environment Variables:
 # - EOSN_WEBPAGE_WEB
@@ -10,6 +10,7 @@ package EOSN::Webpage;
 
 use utf8;
 use strict;
+use warnings;
 use File::Slurp qw(read_file);
 use YAML qw(LoadFile);
 use I18N::AcceptLanguage;
@@ -17,26 +18,12 @@ use Date::Format qw(time2str);
 use Date::Parse qw(str2time);
 use Carp qw(confess);
 
-# --------------------------------------------------------------------------
-# Class Methods
-
-sub new {
-	my ($class) = shift;
-	my ($self) = {};
-	bless $self, $class;
-	return $self->initialize (@_);
-}
-
-sub DESTROY {
-	my ($self) = @_;
-
-	$self->{content} = undef;
-}
+use parent qw(Plack::Component);
 
 # --------------------------------------------------------------------------
-# Private Methods
+# Public Methods
 
-sub initialize {
+sub prepare_app {
 	my ($self) = @_;
 
 	$self->read_env;
@@ -204,6 +191,9 @@ sub generate_page {
 
 	return $output;
 }
+
+# --------------------------------------------------------------------------
+# Public Error Methods
 
 sub error_404 {
 	return [
