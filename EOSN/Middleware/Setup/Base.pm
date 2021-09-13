@@ -6,6 +6,8 @@ use warnings;
 
 use parent qw(Plack::Middleware);
 
+# magic domain of 'any' matches any domain;
+
 # --------------------------------------------------------------------------
 # Subroutines
 
@@ -29,7 +31,7 @@ sub call {
 	my ($self, $env) = @_;
 
 	my $host = $self->host (env => $env);
-	my $config = $self->{config}->{$host};
+	my $config = $self->{config}->{$host} || $self->{config}->{any};
 
 	$$env{'eosn.app'} = $config;
 
