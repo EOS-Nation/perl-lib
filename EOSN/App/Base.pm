@@ -1,18 +1,13 @@
 package EOSN::App::Base;
 
-# Environment Variables:
-# - EOSN_WEBPAGE_WEB
-# - EOSN_WEBPAGE_CONFIG
-# - EOSN_WEBPAGE_LANG
-
 # --------------------------------------------------------------------------
 # Required modules
 
 use utf8;
 use strict;
 use warnings;
+use Plack::Request;
 use File::Slurp qw(read_file);
-use YAML qw(LoadFile);
 use I18N::AcceptLanguage;
 use Date::Format qw(time2str);
 use Date::Parse qw(str2time);
@@ -26,54 +21,102 @@ use parent qw(Plack::Component);
 sub prepare_app {
 	my ($self) = @_;
 
-	$self->read_env;
-	$self->read_strings;
+	# do nothing
 
 	return $self;
+}
+
+sub call {
+	my ($self, $env) = @_;
+
+	$self->{env} = $env;
+
+	my $request = Plack::Request->new ($env);
+	$self->{request} = $request;
+
+	my $uri = $request->path_info;
+	$self->{uri} = $uri;
+
+	my $config = $$env{'eosn.app'};
+	$self->{config} = $config;
+
+	my $lang = $self->setup_lang (env => $env);
+	$self->{lang} = $lang;
+
+	$self->run;
+}
+
+sub run {
+	my ($self) = @_;
+
+	# do nothing
+}
+
+sub request {
+	my ($self) = @_;
+
+	return $self->{request};
+}
+
+sub env {
+	my ($self) = @_;
+
+	return $self->{env};
+}
+
+sub uri {
+	my ($self) = @_;
+
+	return $self->{uri};
+}
+
+sub config {
+	my ($self) = @_;
+
+	return $self->{config};
+}
+
+sub lang {
+	my ($self) = @_;
+
+	return $self->{lang};
+}
+
+sub default_lang {
+	my ($self) = @_;
+
+	return $self->{config}{DefaultLang} || confess "DefaultLang not configured";
 }
 
 sub webdir {
 	my ($self) = @_;
 
-	return $self->{webdir};
+	return $self->{config}{DocumentRoot} || confess "DocumentRoot not configured";
 }
 
 sub configdir {
 	my ($self) = @_;
 
-	return $self->{configdir};
+	return $self->{config}{ConfigDir} || confess "ConfigDir not configured";
 }
 
-sub read_env {
+sub langs {
 	my ($self) = @_;
 
-	$self->{webdir} = $ENV{EOSN_WEBPAGE_WEB} || '/var/www/html';
-	$self->{configdir} = $ENV{EOSN_WEBPAGE_CONFIG} || '/etc/page';
-	$self->{default_lang} = $ENV{EOSN_WEBPAGE_LANG} || 'en';
+	return @{$self->{config}{langs}};
 }
 
-sub read_strings {
+sub labels {
 	my ($self) = @_;
 
-	my $labels = LoadFile ($self->configdir . '/language.yml');
-	my %langs;
-
-	foreach my $label (keys %$labels) {
-		foreach my $lang (keys %{$$labels{$label}}) {
-			$langs{$lang} = 1;
-			#print sprintf ("label %20s %2s: %s\n", $label, $lang, ($$labels{$label}{$lang} || 'undef'));
-		}
-	}
-
-	$self->{langs} = [sort keys %langs];
-	$self->{labels} = $labels;
+	return $self->{config}{labels};
 }
 
-sub lang {
+sub setup_lang {
 	my ($self, %options) = @_;
 
 	my $env = $options{env};
-	my $default_lang = $options{default_lang} || $self->{default_lang};
+	my $default_lang = $options{default_lang} || $self->default_lang;
 
 	my $acceptor = I18N::AcceptLanguage->new;
 	my $lang = $acceptor->accepts ($$env{HTTP_ACCEPT_LANGUAGE}, [$self->langs]) || $default_lang;
@@ -81,24 +124,12 @@ sub lang {
 	return $lang;
 }
 
-sub langs {
-	my ($self) = @_;
-
-	return @{$self->{langs}};
-}
-
-sub labels {
-	my ($self) = @_;
-
-	return $self->{labels};
-}
-
 sub label {
 	my ($self, %options) = @_;
 
 	my $lang = $options{lang} || confess "$0: lang not provided";
 	my $key = $options{key} || confess "$0: key not provided";
-	my $default_lang = $options{default_lang} || $self->{default_lang};
+	my $default_lang = $options{default_lang} || $self->default_lang;
 	my $labels = $self->labels;
 
 	return $$labels{$key}{$lang} || $$labels{$key}{$default_lang} || "[$key]";
@@ -119,7 +150,7 @@ sub commify {
 	my ($self, %options) = @_;
 
 	my $lang = $options{lang};
-	my $default_lang = $options{default_lang} || $self->{default_lang};
+	my $default_lang = $options{default_lang} || $self->default_lang;
 	my $value = $options{value};
 	my $xlang = $lang || $default_lang;
 
