@@ -78,6 +78,10 @@ sub call {
 	my $host = $self->host (env => $env);
 	my $config = $self->{config}->{$host} || $self->{config}->{any};
 
+	if (! exists $$config{DefaultLang}) {
+		die "cannot find configuration for host=<$host>";
+	}
+
 	$$env{'eosn.app'} = $config;
 
 	return $self->app->($env);
