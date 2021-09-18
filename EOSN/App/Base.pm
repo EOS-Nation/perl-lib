@@ -229,8 +229,8 @@ sub generate_page {
 sub error_404 {
 	return [
 		'404',
-		[ ],
-		[ '404 Not Found' ]
+		[ 'Content-Type' => 'text/plain' ],
+		[ "404 Not Found\n" ]
 	];
 }
 
