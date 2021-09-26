@@ -5,6 +5,7 @@ package EOSN::File;
 
 use utf8;
 use strict;
+use warnings;
 use File::Slurp qw(write_file);
 
 use parent qw(Exporter);

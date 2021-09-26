@@ -5,6 +5,7 @@ package EOSN::FindDirs;
 
 use utf8;
 use strict;
+use warnings;
 use File::Find;
 
 use parent qw(Exporter);

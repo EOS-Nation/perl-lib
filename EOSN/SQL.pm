@@ -5,6 +5,7 @@ package EOSN::SQL;
 
 use utf8;
 use strict;
+use warnings;
 use Carp;
 use DBI;
 use Exporter;

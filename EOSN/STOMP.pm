@@ -5,6 +5,7 @@ package EOSN::STOMP;
 
 use utf8;
 use strict;
+use warnings;
 use Carp;
 use Net::Stomp;
 use Exporter;
