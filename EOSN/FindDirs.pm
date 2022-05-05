@@ -17,7 +17,7 @@ our @EXPORT_OK = qw(find_dirs find_dirs_notdot);
 sub find_dirs {
 	my (@dirs) = @_;
 
-	our @directories;
+	our @directories = ();
 
 	find (sub {
 		return if (! -d $_);
@@ -36,7 +36,7 @@ sub find_dirs {
 sub find_dirs_notdot {
 	my (@dirs) = @_;
 
-	our @directories;
+	our @directories = ();
 
 	find (sub {
 		return if (! -d $_);
