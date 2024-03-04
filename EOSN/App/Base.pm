@@ -182,6 +182,15 @@ sub datetime {
 	return time2str ($self->label (lang => $lang, key => 'format_datetime'), $unixtime, 'UTC');
 }
 
+sub network {
+	my ($self) = @_;
+
+	my $network = $self->{request}->headers->header ('X-Network') || 'Unknown';
+	$network =~ s/[^a-zA-Z0-9-_]//g;
+
+	return $network;
+}
+
 sub inject_footer {
 	my ($self, %options) = @_;
 
@@ -212,6 +221,7 @@ sub generate_page {
 	my $footer = $options{footer} || $self->label (lang => $lang, key => 'footer');
 	my $content = $options{content};
 	my $pagefile = $options{pagefile} || $self->webdir . '/res/page.html';
+	my $network = $self->network;
 
 	my $output = read_file ($pagefile, {binmode => ':utf8'});
 	$output = $self->inject_footer (content => $output, lang => $lang);
@@ -219,6 +229,7 @@ sub generate_page {
 	$output =~ s/%CONTENT%/$content/;
 	$output =~ s/%TITLE%/$title/g;
 	$output =~ s/%FOOTER%/$footer/g;
+	$output =~ s/%NETWORK%/$network/g;
 
 	return $output;
 }
