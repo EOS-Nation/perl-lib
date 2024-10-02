@@ -222,6 +222,7 @@ sub generate_page {
 	my $content = $options{content};
 	my $pagefile = $options{pagefile} || $self->webdir . '/res/page.html';
 	my $network = $self->network;
+	my $network_config = $options{network_config};
 
 	my $output = read_file ($pagefile, {binmode => ':utf8'});
 	$output = $self->inject_footer (content => $output, lang => $lang);
@@ -229,7 +230,11 @@ sub generate_page {
 	$output =~ s/%CONTENT%/$content/;
 	$output =~ s/%TITLE%/$title/g;
 	$output =~ s/%FOOTER%/$footer/g;
-	$output =~ s/%NETWORK%/$network/g;
+
+	if ($network) {
+		$output =~ s/%NETWORK%/$network/g;
+		$output =~ s/%NETWORK_TITLE%/$$network_config{title}/g;
+	}
 
 	return $output;
 }
