@@ -191,6 +191,15 @@ sub network {
 	return $network;
 }
 
+sub network_type {
+	my ($self) = @_;
+
+	my $network_type = $self->{request}->headers->header ('X-Network-Type') || 'Unknown';
+	$network_type =~ s/[^a-zA-Z0-9-_]//g;
+
+	return $network_type;
+}
+
 sub inject_footer {
 	my ($self, %options) = @_;
 
@@ -222,6 +231,7 @@ sub generate_page {
 	my $content = $options{content};
 	my $pagefile = $options{pagefile} || $self->webdir . '/res/page.html';
 	my $network = $self->network;
+	my $network_type = $self->network_type;
 	my $network_config = $options{network_config};
 
 	my $output = read_file ($pagefile, {binmode => ':utf8'});
@@ -233,7 +243,11 @@ sub generate_page {
 
 	if ($network) {
 		$output =~ s/%NETWORK%/$network/g;
-		$output =~ s/%NETWORK_TITLE%/$$network_config{title}/g;
+		if ($network_type && $$network_config{registry}{$network_type}{fullName}) {
+			$output =~ s/%NETWORK_TITLE%/$$network_config{registry}{$network_type}{fullName}/g;
+		} else {
+			$output =~ s/%NETWORK_TITLE%/$$network_config{title}/g;
+		}
 	}
 
 	return $output;
