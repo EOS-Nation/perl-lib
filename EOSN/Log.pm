@@ -25,9 +25,8 @@ sub write_timestamp_log {
 
 	chomp ($log);
 
-	if ($ENV{INVOCATION_ID} && ! $ENV{OPSTROM_AGENT}) {
-		# running under systemd (journald adds timestamps), but not as an opstrom command
-		# (opstrom inherits INVOCATION_ID from its own unit, but its command output has no timestamps)
+	if ($ENV{INVOCATION_ID}) {
+		# running under systemd
 		$| = 1;
 		print sprintf ("%s\n", $log);
 	} else {
